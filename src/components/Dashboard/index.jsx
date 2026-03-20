@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import MediaUpload from "../MediaUpload";
 
 import { Alert } from "@mui/material";
 import Card from "@mui/material/Card";
@@ -296,6 +297,9 @@ const Dashboard = ({ background = "white", textColor = "black" }) => {
           <h3 className="mb-0 center" style={{ color: textColor }}>
             Let's complete your profile before we dive in.
           </h3>
+          <Box display="flex" justifyContent="center" mt={3} mb={3}>
+            <MediaUpload userId={handle || "guest_user"} />
+          </Box>
         </Grid>
 
         <Grid xs={12} sm={12} md={showOrgForm ? 12 : 6} item={true}>

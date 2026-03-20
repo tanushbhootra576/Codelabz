@@ -8,6 +8,8 @@ import "firebase/compat/analytics";
 import "firebase/compat/performance";
 import "firebase/compat/messaging";
 import { initializeApp } from "firebase/app";
+import { getStorage } from "firebase/storage";
+import { getFirestore } from "firebase/firestore";
 import { onMessage } from "firebase/messaging";
 
 const firebaseConfig = {
@@ -24,6 +26,11 @@ const firebaseConfig = {
 // console.log("firebaseConfig", firebaseConfig);
 
 export const onlineFirebaseApp = initializeApp(firebaseConfig, "secondary");
+
+// Modular exports
+export const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
+export const storage = getStorage(app);
 
 // Initialize firebase instance
 firebase.initializeApp(firebaseConfig);
@@ -158,3 +165,4 @@ if (checkFirebaseServices) {
 }
 
 export default firebase;
+
