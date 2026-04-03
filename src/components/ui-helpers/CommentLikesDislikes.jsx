@@ -22,6 +22,10 @@ const CommentLikesDislikes = ({ comment_id }) => {
       .collection("comment_likes")
       .doc(`${comment_id}_${userId}`);
 
+    // Declare unsubscriber variables outside the async function
+    let unsubscribeLikes;
+    let unsubscribeDislikes;
+
     // Fetch initial data and set up real-time listeners
     const fetchData = async () => {
       try {
@@ -40,7 +44,7 @@ const CommentLikesDislikes = ({ comment_id }) => {
         }
 
         // Subscribe to real-time updates for likes and dislikes
-        const unsubscribeLikes = db
+        unsubscribeLikes = db
           .collection("comment_likes")
           .where("comment_id", "==", comment_id)
           .where("value", "==", 1)
@@ -49,7 +53,7 @@ const CommentLikesDislikes = ({ comment_id }) => {
             commentDocRef.update({ upVotes: snapshot.size });
           });
 
-        const unsubscribeDislikes = db
+        unsubscribeDislikes = db
           .collection("comment_likes")
           .where("comment_id", "==", comment_id)
           .where("value", "==", -1)
@@ -57,18 +61,18 @@ const CommentLikesDislikes = ({ comment_id }) => {
             setDownVotes(snapshot.size);
             commentDocRef.update({ downVotes: snapshot.size });
           });
-
-        // Cleanup function to unsubscribe from listeners when component unmounts
-        return () => {
-          unsubscribeLikes();
-          unsubscribeDislikes();
-        };
       } catch (error) {
         console.error("Error fetching comment data:", error);
       }
     };
 
     fetchData();
+
+    // Return synchronous cleanup function to React
+    return () => {
+      if (unsubscribeLikes) unsubscribeLikes();
+      if (unsubscribeDislikes) unsubscribeDislikes();
+    };
   }, [comment_id, db]);
 
   const handleUserChoice = async (event, newChoice) => {
